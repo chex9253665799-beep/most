@@ -1234,6 +1234,10 @@ pub fn is_rustdesk() -> bool {
 
 #[inline]
 pub fn get_uri_prefix() -> String {
+    // «Мост»: имя программы может быть не латиницей, а схема ссылки — только латиница
+    if let Some(scheme) = option_env!("MOST_URI_SCHEME") {
+        return format!("{}://", scheme);
+    }
     format!("{}://", get_app_name().to_lowercase())
 }
 
@@ -2507,6 +2511,8 @@ pub fn rustdesk_interval(i: Interval) -> ThrottledInterval {
 }
 
 pub fn load_custom_client() {
+    // «Мост»: настройки, вшитые при сборке (имя, свой сервер, скрытые разделы настроек)
+    load_builtin_brand();
     #[cfg(debug_assertions)]
     if let Ok(data) = std::fs::read_to_string("./custom.txt") {
         read_custom_client(data.trim());
@@ -2604,6 +2610,19 @@ pub fn get_dst_align_rgba() -> usize {
     1
 }
 
+/// «Мост»: конфигурация из переменной сборки MOST_CONFIG (base64 JSON того же вида, что custom.txt).
+/// Она вшита в программу при сборке нашим же CI, поэтому подпись не нужна.
+fn load_builtin_brand() {
+    let Some(cfg) = option_env!("MOST_CONFIG") else {
+        return;
+    };
+    let Ok(data) = decode64(cfg.trim()) else {
+        log::error!("Failed to decode built-in brand config");
+        return;
+    };
+    apply_custom_client_data(&data);
+}
+
 pub fn read_custom_client(config: &str) {
     let Ok(data) = decode64(config) else {
         log::error!("Failed to decode custom client config");
@@ -2618,8 +2637,12 @@ pub fn read_custom_client(config: &str) {
         log::error!("Failed to dec custom client config");
         return;
     };
+    apply_custom_client_data(&data);
+}
+
+fn apply_custom_client_data(data: &[u8]) {
     let Ok(mut data) =
-        serde_json::from_slice::<std::collections::HashMap<String, serde_json::Value>>(&data)
+        serde_json::from_slice::<std::collections::HashMap<String, serde_json::Value>>(data)
     else {
         log::error!("Failed to parse custom client config");
         return;
