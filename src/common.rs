@@ -1233,6 +1233,15 @@ pub fn is_rustdesk() -> bool {
 }
 
 #[inline]
+/// «Мост»: имя для человека (окно, тексты). Внутреннее имя (папка, служба, установка) — get_app_name(),
+/// оно обязано быть латиницей: установщик подставляет его в системные команды.
+pub fn get_display_app_name() -> String {
+    match option_env!("MOST_DISPLAY_NAME") {
+        Some(name) if !name.is_empty() => name.to_owned(),
+        _ => get_app_name(),
+    }
+}
+
 pub fn get_uri_prefix() -> String {
     // «Мост»: имя программы может быть не латиницей, а схема ссылки — только латиница
     if let Some(scheme) = option_env!("MOST_URI_SCHEME") {

@@ -5,7 +5,8 @@ import base64, json, os
 
 host, key = os.environ["MOST_HOST"].strip(), os.environ["MOST_KEY"].strip()
 cfg = {
-    "app-name": "Мост",
+    # внутреннее имя — только латиница (папка, служба, установка); для человека — «Мост» (MOST_DISPLAY_NAME при сборке)
+    "app-name": "Most",
     # default-settings: начальные значения, пользователь может поменять
     "default-settings": {
         "view-style": "adaptive",          # картинка подгоняется под размер окна и экрана
