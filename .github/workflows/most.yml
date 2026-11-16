@@ -61,7 +61,7 @@ jobs:
           MOST_KEY: ${{ secrets.MOST_KEY }}
         run: |
           set -e
-          [ -n "$MOST_HOST" ] && [ -n "$MOST_KEY" ] || { echo "Нет секретов MOST_HOST / MOST_KEY"; exit 1; }
+          [ -n "$MOST_HOST" ] || { echo "Нет секрета MOST_HOST"; exit 1; }
           python3 most/brand.py
           # вшитые настройки (как custom.txt RustDesk, но без отдельного файла)
           CFG=$(python3 most/config.py)

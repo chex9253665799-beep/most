@@ -3,7 +3,17 @@
 Сервер и ключ берутся из переменных окружения MOST_HOST / MOST_KEY (секреты репозитория)."""
 import base64, json, os
 
-host, key = os.environ["MOST_HOST"].strip(), os.environ["MOST_KEY"].strip()
+# открытый ключ нашего сервера (не секрет: сервер отдаёт его каждому, кто подключается)
+SERVER_KEY = "XTeuCKFYbhRlyuHHPiJHVOQv0Eg257njFXs7kNHjt20="
+
+host = os.environ["MOST_HOST"].strip()
+key = os.environ.get("MOST_KEY", "").strip().strip('"').strip("'")
+try:
+    ok = len(base64.b64decode(key, validate=True)) == 32
+except Exception:
+    ok = False
+if not ok:
+    key = SERVER_KEY
 cfg = {
     # внутреннее имя — только латиница (папка, служба, установка); для человека — «Мост» (MOST_DISPLAY_NAME при сборке)
     "app-name": "Most",
