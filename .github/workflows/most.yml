@@ -21,6 +21,8 @@ env:
   FLUTTER_VERSION: "3.24.5"
   VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
   VCPKG_COMMIT_ID: "9e593bb18ea69cc5095e012465dcd675a822ed0d"
+  PYTHONUTF8: "1"
+  PYTHONIOENCODING: utf-8
 
 jobs:
   generate-bridge:
@@ -53,6 +55,8 @@ jobs:
       - name: Brand «Мост»
         shell: bash
         env:
+          PYTHONUTF8: "1"
+          PYTHONIOENCODING: utf-8
           MOST_HOST: ${{ secrets.MOST_HOST }}
           MOST_KEY: ${{ secrets.MOST_KEY }}
         run: |
