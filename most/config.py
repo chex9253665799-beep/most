@@ -6,6 +6,12 @@ import base64, json, os
 host, key = os.environ["MOST_HOST"].strip(), os.environ["MOST_KEY"].strip()
 cfg = {
     "app-name": "Мост",
+    # default-settings: начальные значения, пользователь может поменять
+    "default-settings": {
+        "view-style": "adaptive",          # картинка подгоняется под размер окна и экрана
+        "show-monitors-toolbar": "Y",      # переключатель мониторов, если у удалённого ПК их несколько
+        "lang": "ru",
+    },
     # override-settings: свой сервер (пользователь не может его поменять) и скрытые разделы настроек.
     # Ключи hide-*/disable-* попадают во встроенные настройки (BUILTIN_SETTINGS) RustDesk.
     "override-settings": {
